@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}HR Analytics - JSCode{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-navy: #000080;
+        --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        --accent-green: #2ecc71;
+    }
+
+    .analytics-header {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: var(--card-shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-info h2 { margin: 0; color: var(--primary-navy); font-size: 1.4rem; }
+    .header-info p { margin: 5px 0 0; color: #64748b; font-size: 0.85rem; }
+
+    /* Filter Form Styling */
+    .filter-group { display: flex; gap: 12px; align-items: center; }
+    .filter-group select, .filter-group input {
+        padding: 10px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        color: #334155;
+    }
+    .btn-search {
+        background: var(--primary-navy);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    .btn-search:hover { opacity: 0.9; }
+
+    /* Dashboard Cards */
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #f1f5f9;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .card-header h3 { margin: 0; font-size: 1.05rem; color: #1e293b; font-weight: 700; }
+    
+    .icon-box {
+        width: 35px; height: 35px;
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        background: #f1f5f9;
+    }
+
+    /* Table Styling */
+    .stat-table { width: 100%; border-collapse: collapse; }
+    .stat-table th { text-align: left; font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; padding: 10px; }
+    .stat-table td { padding: 12px 10px; font-size: 0.9rem; border-bottom: 1px solid #f8fafc; color: #334155; }
+    
+    .total-row { background: #f8fafc; font-weight: 800; color: var(--primary-navy) !important; }
+    .val-cell { text-align: right; font-weight: 600; width: 60px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-header">
+    <div class="header-info">
+        <h2>📊 Intelligence Dashboard</h2>
+        <p>Insights for <strong>{{ selected_date }}</strong> {% if selected_unit %}- Unit: {{ selected_unit }}{% endif %}</p>
+    </div>
+
+    <form method="GET" class="filter-group">
+        <select name="unit">
+            <option value="">All Units</option>
+            <option value="MUM" {% if selected_unit == 'MUM' %}selected{% endif %}>Mumbai</option>
+            <option value="NY" {% if selected_unit == 'NY' %}selected{% endif %}>New York</option>
+        </select>
+        
+        <input type="date" name="date" value="{{ selected_date }}">
+        
+        <button type="submit" class="btn-search">Search Details</button>
+    </form>
+</div>
+
+<div class="analytics-grid">
+    <div class="stat-card">
+        <div class="card-header">
+            <h3>On-roll Employees by Gender</h3>
+            <div class="icon-box" style="color: #2ecc71;">👥</div>
+        </div>
+        <table class="stat-table">
+            <thead>
+                <tr><th>Category</th><th class="val-cell">Male</th><th class="val-cell">Female</th><th class="val-cell">Total</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Staff</td>
+                    <td class="val-cell">{{ gender_stats.male_staff }}</td>
+                    <td class="val-cell">{{ gender_stats.female_staff }}</td>
+                    <td class="val-cell">{% widthratio 1 1 gender_stats.male_staff|add:gender_stats.female_staff %}</td>
+                </tr>
+                <tr>
+                    <td>Workers</td>
+                    <td class="val-cell">{{ gender_stats.male_workers }}</td>
+                    <td class="val-cell">{{ gender_stats.female_workers }}</td>
+                    <td class="val-cell">{% widthratio 1 1 gender_stats.male_workers|add:gender_stats.female_workers %}</td>
+                </tr>
+                <tr class="total-row">
+                    <td>Grand Total</td>
+                    <td class="val-cell">{{ gender_stats.male_staff|add:gender_stats.male_workers }}</td>
+                    <td class="val-cell">{{ gender_stats.female_staff|add:gender_stats.female_workers }}</td>
+                    <td class="val-cell">{{ gender_stats.total_employees }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="stat-card">
+        <div class="card-header">
+            <h3>Attendance Status (Present)</h3>
+            <div class="icon-box" style="color: #e74c3c;">📌</div>
+        </div>
+        <table class="stat-table">
+            <thead>
+                <tr><th>Status Metric</th><th class="val-cell">Male</th><th class="val-cell">Female</th><th class="val-cell">Total</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Present Today</td>
+                    <td class="val-cell">{{ attendance_stats.male_present }}</td>
+                    <td class="val-cell">{{ attendance_stats.female_present }}</td>
+                    <td class="val-cell">{{ attendance_stats.total_present }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td>Attendance %</td>
+                    <td colspan="3" style="text-align: right;">
+                        {% if gender_stats.total_employees > 0 %}
+                            Live Strength: {{ attendance_stats.total_present }} / {{ gender_stats.total_employees }}
+                        {% else %} 0.00% {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - JSCode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #f4f7f9; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { display: flex; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 850px; width: 95%; height: 500px; }
+        
+        /* Branding Side */
+        .brand-side { background: #c3a6ff; padding: 40px; color: white; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .logo-box h1 { font-size: 32px; margin: 0; }
+        .bar-chart { display: flex; gap: 4px; align-items: flex-end; margin-bottom: 10px; }
+        .bar { width: 8px; border-radius: 2px; }
+        .green-1 { height: 15px; background: #4ade80; } .blue-1 { height: 25px; background: #3b82f6; }
+        .green-2 { height: 20px; background: #4ade80; } .blue-2 { height: 35px; background: #3b82f6; }
+        .tagline { margin-top: 40px; font-style: italic; opacity: 0.9; font-size: 14px; }
+
+        /* Form Side */
+        .form-side { padding: 50px; flex: 1.2; display: flex; flex-direction: column; justify-content: center; }
+        .form-side h3 { margin: 0; font-size: 24px; color: #333; }
+        .form-side p { color: #777; margin-bottom: 30px; }
+        
+        .input-group { margin-bottom: 20px; position: relative; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        .toggle-icon { position: absolute; right: 15px; top: 12px; cursor: pointer; color: #999; }
+        
+        .btn-signin { width: 100%; background: linear-gradient(to right, #ff5e62, #ff9966); color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        
+        .footer-links { text-align: center; margin-top: 25px; color: #999; font-size: 13px; }
+        .footer-links hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        .footer-links a { color: #6200ea; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="brand-side">
+        <div class="logo-box">
+            <div class="bar-chart">
+                <span class="bar green-1"></span>
+                <span class="bar blue-1"></span>
+                <span class="bar green-2"></span>
+                <span class="bar blue-2"></span>
+            </div>
+            <h1>JSCode</h1>
+        </div>
+        <div class="features">
+            <p><strong>🔒 Secure Access</strong><br><small>OTP-based authentication</small></p>
+            <p><strong>📈 Performance Tracking</strong><br><small>Real-time insights</small></p>
+        </div>
+        <p class="tagline">"keep your teams perfectly in sync."</p>
+    </div>
+
+    <div class="form-side">
+        <h3>Hello Again!</h3>
+        <p>Welcome back you've been missed!</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Enter username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="password" id="id_password" placeholder="Password" required>
+                <span class="toggle-icon" onclick="togglePassword()">👁️</span>
+            </div>
+
+            <div class="input-group">
+                <select name="location">
+                    <option value="" disabled selected>Location</option>
+                    <option value="MUM">Mumbai</option>
+                    <option value="NY">New York</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-signin">Sign In</button>
+        </form>
+        
+        <div class="footer-links">
+            <hr>
+            <a href="#">Forgot Password?</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const passField = document.getElementById("id_password");
+        passField.type = passField.type === "password" ? "text" : "password";
+    }
+</script>
+
+</body>
+</html>

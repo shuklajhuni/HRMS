@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JSCode HRMS{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-blue: #0056b3;
+            --bg-light: #f4f7f9;
+        }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-light); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Styling */
+        .sidebar { width: var(--sidebar-width); background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+        .sidebar-brand { padding: 20px; font-size: 24px; font-weight: bold; color: var(--primary-blue); border-bottom: 1px solid #eee; }
+        .nav-links { flex-grow: 1; padding: 20px 0; }
+        .nav-item { display: block; padding: 12px 25px; color: #444; text-decoration: none; transition: 0.3s; }
+        .nav-item:hover { background: #f0f4f8; color: var(--primary-blue); }
+        .nav-item.active { background: #eef2f7; color: var(--primary-blue); border-left: 4px solid var(--primary-blue); font-weight: 600; }
+
+        /* Main Content Area */
+        .wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .top-bar { height: 60px; background: white; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .content-area { flex-grow: 1; padding: 25px; overflow-y: auto; }
+        
+        /* Shared UI Elements */
+        .section-header { background: #000080; color: white; padding: 10px 15px; font-weight: bold; margin-bottom: 20px; border-radius: 4px; }
+        .btn-logout { color: #d9534f; text-decoration: none; font-weight: 500; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">JSCode</div>
+        <nav class="nav-links">
+            <a href="{% url 'hrms-dashboard' %}" class="nav-item">🏠 Dashboard</a>
+            <a href="{% url 'employee-manage' %}" class="nav-item">Employee Profile</a>
+            <a href="{% url 'employee-history' %}" class="nav-item"> Attendance</a>
+            <a href="{% url 'hr-analytics' %}" class="nav-item">HR Reports</a>
+        </nav>
+    </aside>
+
+    <div class="wrapper">
+        <header class="top-bar">
+            <div class="top-left"><strong>HRMS</strong></div>
+            <div class="top-right">
+                <span style="margin-right: 15px;">Welcome, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout ➡</a>
+            </div>
+        </header>
+
+        <main class="content-area">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

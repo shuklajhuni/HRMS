@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Employee History - JSCode{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root { --navy: #000080; --green: #2ecc71; --red: #e74c3c; }
+    .history-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; margin: 10px; }
+    .card-header { padding: 20px; border-bottom: 2px solid #eee; background: #f8f9fa; }
+    
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th { background: var(--navy); color: white; text-align: left; padding: 12px; text-transform: uppercase; font-size: 11px; }
+    .data-table td { padding: 12px; border-bottom: 1px solid #eee; color: #444; }
+
+    /* Badge & Button Styling */
+    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    .btn-status { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; color: white; transition: 0.2s; }
+    .btn-p { background: var(--green); }
+    .btn-a { background: var(--red); }
+    .btn-status:disabled { background: #ccc !important; cursor: not-allowed; opacity: 0.6; }
+    
+    /* Alert Messages */
+    .alert { padding: 10px 20px; margin: 15px; border-radius: 6px; font-weight: 500; font-size: 14px; }
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="history-card">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <header class="card-header">
+        <h3 style="margin:0; color:var(--navy);">Employee Daily Status</h3>
+    </header>
+
+    <table class="data-table" id="employeeTable">
+        <thead>
+            <tr>
+                <th>Emp Code</th>
+                <th>Full Name</th>
+                <th>Department</th>
+                <th>Today's Status</th>
+                <th style="text-align: center;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr>
+                <td><strong>{{ emp.emp_code }}</strong></td>
+                <td>{{ emp.name }}</td>
+                <td>{{ emp.department }}</td>
+                
+                {% with last_att=emp.attendance_records.all|dictsort:"date"|last %}
+                <td>
+                    {% if last_att and last_att.date|date:"Y-m-d" == today|date:"Y-m-d" %}
+                        <span class="status-badge" style="background: {% if last_att.status == 'Present' %}#e8f5e9{% else %}#ffebee{% endif %}; color: {% if last_att.status == 'Present' %}#2e7d32{% else %}#c62828{% endif %};">
+                            {{ last_att.status|upper }}
+                        </span>
+                    {% else %}
+                        <span style="color: #999; font-size: 11px;">Not Marked</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <form method="POST" onsubmit="return confirmAction(this)">
+                        {% csrf_token %}
+                        <input type="hidden" name="employee_id" value="{{ emp.id }}">
+                        <div style="display: flex; gap: 8px; justify-content: center;">
+                            <button type="submit" name="action" value="Present" class="btn-status btn-p" 
+                                {% if last_att and last_att.date|date:"Y-m-d" == today|date:"Y-m-d" %}disabled{% endif %}>
+                                Present
+                            </button>
+                            <button type="submit" name="action" value="Absent" class="btn-status btn-a" 
+                                {% if last_att and last_att.date|date:"Y-m-d" == today|date:"Y-m-d" %}disabled{% endif %}>
+                                Absent
+                            </button>
+                        </div>
+                    </form>
+                </td>
+                {% endwith %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function confirmAction(form) {
+        const buttons = form.querySelectorAll('.btn-status');
+        setTimeout(() => {
+            buttons.forEach(btn => btn.disabled = true);
+        }, 10);
+        return true;
+    }
+</script>
+{% endblock %}

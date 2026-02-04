@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HRMS Dashboard - JSCode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --navy: #000080; --bg: #f4f7f9; }
+        body { 
+            margin: 0; font-family: 'Inter', sans-serif; background: var(--bg);
+            background-image: linear-gradient(#e5eaf0 1px, transparent 1px), linear-gradient(90deg, #e5eaf0 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .top-nav { background: white; padding: 10px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; }
+        .brand { font-size: 24px; font-weight: 800; color: var(--navy); text-decoration: none; }
+        
+        .main-wrapper { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
+        /* Clickable Action Cards */
+        .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; }
+        .card-link { text-decoration: none; }
+        .card { padding: 30px; border-radius: 20px; color: white; transition: 0.3s; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .teal { background: linear-gradient(135deg, #17a2b8, #117a8b); }
+        .red { background: linear-gradient(135deg, #dc3545, #bd2130); }
+        .orange { background: linear-gradient(135deg, #ff8c00, #e67e22); }
+
+        /* Record Lists */
+        .record-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .record-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); min-height: 300px; }
+        .record-card h4 { margin: 0 0 15px; color: var(--navy); border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        .emp-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .dot-present { background: #2ecc71; }
+        .dot-absent { background: #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <header class="top-nav">
+        <a href="{% url 'selection-dashboard' %}" class="brand">JSCode</a>
+        <div class="user-profile"><strong>Admin</strong></div>
+    </header>
+
+    <div class="main-wrapper">
+        <section class="action-grid">
+            <a href="{% url 'employee-manage' %}" class="card-link">
+                <div class="card teal"><h3>Employee & Team</h3><p>View full history</p></div>
+            </a>
+            <a href="{% url 'employee-history' %}" class="card-link">
+                <div class="card red"><h3>Attendance & Leave</h3><p>Manage punch records</p></div>
+            </a>
+            <a href="{% url 'hr-analytics' %}" class="card-link">
+                <div class="card orange"><h3>Reports</h3><p>View analytics</p></div>
+            </a>
+        </section>
+
+        <section class="record-grid">
+            <div class="record-card">
+                <h4>✅ Present Today</h4>
+                {% for att in present_employees %}
+                <div class="emp-row">
+                    <span><span class="status-dot dot-present"></span> {{ att.employee.name }}</span>
+                    <small style="color: #666;">{{ att.employee.emp_code }}</small>
+                </div>
+                {% empty %}
+                <p style="color:#999; text-align:center; margin-top:50px;">No presence recorded.</p>
+                {% endfor %}
+            </div>
+
+            <div class="record-card">
+                <h4>❌ Absent Today</h4>
+                {% for att in absent_employees %}
+                <div class="emp-row">
+                    <span><span class="status-dot dot-absent"></span> {{ att.employee.name }}</span>
+                    <small style="color: #666;">{{ att.employee.emp_code }}</small>
+                </div>
+                {% empty %}
+                <p style="color:#999; text-align:center; margin-top:50px;">All employees present!</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Module - JSCode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #000080;
+            --accent-purple: #c3a6ff;
+            --bg-light: #f8fafd;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            /* Technical Grid Pattern */
+            background-image: 
+                linear-gradient(#e5eaf0 1px, transparent 1px),
+                linear-gradient(90deg, #e5eaf0 1px, transparent 1px);
+            background-size: 30px 30px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styling */
+        .dashboard-header {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-navy);
+            letter-spacing: -1px;
+        }
+
+        .user-actions { display: flex; gap: 15px; align-items: center; }
+
+        .btn-alt {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+            transition: 0.3s;
+        }
+
+        .btn-logout {
+            color: #d9534f;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Module Cards Grid */
+        .selection-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .module-card {
+            background: white;
+            width: 220px;
+            height: 220px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #f0f0f0;
+        }
+
+        .module-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 86, 179, 0.15);
+            border-color: var(--accent-purple);
+        }
+
+        .module-card .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            transition: 0.3s;
+        }
+
+        /* Card-specific colors */
+        .admin-bg { background: #f0f7ff; color: #007bff; }
+        .hrms-bg { background: #fff0f3; color: #ff4d6d; }
+        .comp-bg { background: #f0fff4; color: #2ecc71; }
+
+        .module-card span {
+            font-weight: 700;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .module-card p {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            text-align: center;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="dashboard-header">
+        <div class="logo">JSCode</div>
+        <div class="user-actions">
+            <button class="btn-alt">Change Password</button>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout" style="background: none; border: none;">
+                    Logout ➡
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <main class="selection-container">
+        <a href="/admin" class="module-card">
+            <div class="icon-circle admin-bg">🛠️</div>
+            <span>Admin</span>
+            <p>System settings and user control</p>
+        </a>
+
+        <a href="{% url 'hrms-dashboard' %}" class="module-card">
+            <div class="icon-circle hrms-bg">👥</div>
+            <span>HRMS</span>
+            <p>Employee and attendance management</p>
+        </a>
+    </main>
+
+</body>
+</html>
